@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(PlatformerSFML)
+set(SMAKE_POLICY_VERSION_MINIMUM 3.5)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
@@ -15,12 +16,21 @@ FetchContent_Declare(   # Fetches SFML from github and puts it in the build dire
 
 FetchContent_MakeAvailable(SFML)    # Makes sure SFML and its dependencies are avaiable for the project
 
+
+FetchContent_Declare(
+    nlohmann.json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.2
+)
+
+FetchContent_MakeAvailable(nlohmann.json)
+
 #---- File management & .exe creation ----#
 
 set(SOURCE_FILES src/main.cpp src/Game.cpp src/Game.h)  # Sets variable SOURCE_FILES to hold names & locations of files that need to be compiled into the application
-add_executable(PlatformerSFML ${SOURCE_FILES})  # Names the application and tells compiler which source files to use
+add_executable(PlatformerSFML ${SOURCE_FILES} "src/PlayingState.cpp" "src/GameObject.cpp" "src/Vector2.cpp" "src/MenuState.cpp" "src/UImanager.cpp" "src/GameObject.h" "src/MenuState.h" "src/PlayingState.h" "src/UImanager.h" "src/Vector2.h" "src/PlayerMovement.cpp" "src/AImovement.cpp" "src/AImovement.h" "src/PlayerMovement.h" "src/MapManager.cpp" "src/MapManager.h" "src/Tile.cpp" "src/Tile.h" "src/JsonLoader.h" "src/JsonLoader.cpp" "src/map.cpp" "src/map.h" "src/Layer.cpp" "src/Layer.h" "src/AssetManager.h" "src/AssetManager.cpp" "src/GameEnd.cpp" "src/GameEnd.h")  # Names the application and tells compiler which source files to use
 
-target_link_libraries(PlatformerSFML PRIVATE sfml-graphics sfml-window sfml-system sfml-network sfml-audio) # Links the SFML libraries we need to our application
+target_link_libraries(PlatformerSFML PRIVATE sfml-graphics sfml-window sfml-system sfml-network sfml-audio nlohmann_json::nlohmann_json) # Links the SFML libraries we need to our application
 target_compile_features(PlatformerSFML PRIVATE cxx_std_20)  # Defines which standard of C++ the compiler should use
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Data/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Data/)  # Copies data from source directory to build directory (so the executable can access it)

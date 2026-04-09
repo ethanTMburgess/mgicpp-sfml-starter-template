@@ -1,57 +1,143 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Game.h"
+#include "UImanager.h"
+#include "GameObject.h"
+#include <windows.h>
+#include <filesystem>
 
 
+
+// test change
 int main()
 {
-  std::cout << "You should see a window that opens as well as this writing to console..."
-            << std::endl;
+    std::cout << "You should see a window that opens as well as this writing to console..."
+        << std::endl;
 
-  // create window and set up
-  sf::RenderWindow window(sf::VideoMode(1080, 720), "Platform game");
-  window.setFramerateLimit(60);
+    std::cout << "Working directory: " << std::filesystem::current_path() << std::endl;
 
-  //initialise an instance of the game class
-  Game game(window);
+    SetProcessDPIAware();
 
-  //run the init function of the game class and check it all initialises ok
-  if (!game.init())
-  {
-    return 0;
-  }
+    // create window and set up
+    sf::RenderWindow window(sf::VideoMode(592, 352), "Critters Crossing");
+    sf::Font font;
+    font.setSmooth(false);
+   // font.loadFromFile("../Data/Fonts/PixelifySans-Regular.ttf");
 
-  // A Clock starts counting as soon as it's created
-  sf::Clock clock;
 
-  // Game loop: run the program as long as the window is open
-  while (window.isOpen())
-  {
-    // check all the window's events that were triggered since the last iteration of the loop
-    sf::Event event;
+    sf::View view(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
+    window.setView(view);
 
-    //calculate delta time
-    sf::Time time = clock.restart();
-    float dt = time.asSeconds();
-
-    //'process inputs' element of the game loop
-    while (window.pollEvent(event))
+    /*
+    sf::Image icon;
+    if (icon.loadFromFile("../Data/assets/crossing/critters/frog portrait.png"))
     {
-      // "close requested" event: we close the window
-      if (event.type == sf::Event::Closed)
-        window.close();
+        window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+    }
+    */
+
+    window.setFramerateLimit(60);
+
+    sf::Mouse mouse;
+
+
+
+    //initialise an instance of the game class
+    Game game(window);
+    //UImanager UI;
+
+
+    //run the init function of the game class and check it all initialises ok
+    if (!game.init())
+    {
+        return 0;
+    }
+
+    // A Clock starts counting as soon as it's created
+    sf::Clock clock;
+
+    // Game loop: run the program as long as the window is open
+    while (window.isOpen())
+    {
+        // check all the window's events that were triggered since the last iteration of the loop
+        sf::Event event;
+
+        //calculate delta time
+        sf::Time time = clock.restart();
+        float dt = time.asSeconds();
+
+        //'process inputs' element of the game loop
+        while (window.pollEvent(event))
+        {
+
+
+
+            
+          if (event.type == sf::Event::MouseButtonPressed)
+            {
+                sf::Vector2f cursor_location =
+                    static_cast<sf::Vector2f> (mouse.getPosition(window));
+
+                game.mouseButtonPressed(event, cursor_location);
+
+                if (game.currentState == GameState::PLAYING)
+                {
+                    event.mouseButton.button = sf::Mouse::Left;
+                }
+            }
+            
+            // "close requested" event: we close the window
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Space)
+                {
+                    game.keyPressed(event);
+                }
+            }
+
+
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+            {
+                //UI.mouseClicked(window, event);
+                game.mousePressed(event);
+
+            }
+
+
+            if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+            {
+                game.mouseReleased(event);
+
+
+            }
+
+
+            if (event.type == sf::Event::MouseMoved)
+            {
+                game.mouseMoved(event);
+            }
+
+
+
+
+
+        }
+
+        game.update(dt);
+        window.clear(sf::Color::Black);
+        game.render();
+        window.display();
+
+
+
+
     }
 
 
-    //'update' element of the game loop
-    game.update(dt);
 
-    window.clear(sf::Color::Black);
 
-    //'render' element of the game loop
-    game.render();
-    window.display();
-  }
-
-  return 0;
+    return 0;
 }
