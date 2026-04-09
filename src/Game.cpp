@@ -10,6 +10,9 @@
 #include <cstdlib>
 #include <ctime>
 
+
+
+// comment to check version history (long story)
 Game::Game(sf::RenderWindow& game_window)
   : window(game_window)
 {
