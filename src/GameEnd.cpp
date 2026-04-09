@@ -20,20 +20,20 @@ bool GameEnd::init(bool won)
 
 	if (win)
 	{
-		endText.setString("Woah! you got all of the coins!!");
+		endText.setString("    Woah! \n   you got all of the coins!!");
 		
 	}
 	else
 	{
-		endText.setString("Oh no! You ran out of time!!");
+		endText.setString("     Oh no! \n   You ran out of time!!");
 	}
 
 
 	playAgainText.setFont(font);
 	playAgainText.setCharacterSize(30);
 	playAgainText.setFillColor(sf::Color::White);
-	playAgainText.setString("click mouse button to return to mennu");
-	playAgainText.setPosition(10, 200);
+	playAgainText.setString("     click mouse button to \n     return to menu");
+	playAgainText.setPosition(80, 240);
 
 	return true;
 }
